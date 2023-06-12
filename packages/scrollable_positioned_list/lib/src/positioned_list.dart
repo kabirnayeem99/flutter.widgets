@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/scheduler.dart';
@@ -295,15 +294,16 @@ class _PositionedListState extends State<PositionedList> {
   void _schedulePositionNotificationUpdate() {
     if (!updateScheduled) {
       updateScheduled = true;
-      SchedulerBinding.instance!.addPostFrameCallback((_) {
+      SchedulerBinding.instance.addPostFrameCallback((_) {
         if (registeredElements.value == null) {
           updateScheduled = false;
           return;
         }
-        final positions = <ItemPosition>[];
+        final List<ItemPosition> positions = <ItemPosition>[];
         RenderViewport? viewport;
         for (var element in registeredElements.value!) {
-          final RenderBox box = element.renderObject as RenderBox;
+          final RenderBox? box = element.renderObject as RenderBox?;
+          if (box == null) return;
           viewport ??= RenderAbstractViewport.of(box) as RenderViewport?;
           final ValueKey<int> key = element.widget.key as ValueKey<int>;
           if (widget.scrollDirection == Axis.vertical) {
